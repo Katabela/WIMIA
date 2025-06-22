@@ -1,0 +1,20 @@
+{% extends 'partials/base.html' %} {% block content %}
+<div class="container text-center mt-5">
+  <h1>Welcome to <em>What Is My Itinerary Again?</em></h1>
+  <p class="lead">
+    The easiest way to stay on top of your travel, events, and check-in times.
+  </p>
+  {% if current_user.is_authenticated %}
+  <a href="{{ url_for('main.dashboard') }}" class="btn btn-primary mt-3"
+    >Go to Dashboard</a
+  >
+  {% else %}
+  <a href="{{ url_for('auth.login') }}" class="btn btn-primary mt-3">Log In</a>
+  <a
+    href="{{ url_for('auth.register') }}"
+    class="btn btn-outline-secondary mt-3 ms-2"
+    >Sign Up</a
+  >
+  {% endif %}
+</div>
+{% endblock %}

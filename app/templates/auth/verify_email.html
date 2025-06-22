@@ -1,0 +1,20 @@
+{% extends 'auth/auth_base.html' %} {% block auth_title %}Verify Your Email{%
+endblock %} {% block auth_subtitle %}We just sent you a code 👀{% endblock %} {%
+block auth_content %}
+<form method="POST">
+  <div class="mb-3">
+    <label for="code">Verification Code</label>
+    <input
+      type="text"
+      name="code"
+      class="form-control"
+      placeholder="Enter 6-digit code"
+      required
+    />
+  </div>
+  <button type="submit" class="btn btn-success w-100">Verify & Log In</button>
+</form>
+<p class="text-center mt-3">
+  <a href="{{ url_for('auth.register') }}">Back to Sign Up</a>
+</p>
+{% endblock %}

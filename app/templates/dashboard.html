@@ -1,0 +1,17 @@
+{% extends 'partials/base.html' %} {% block content %}
+<div class="container mt-5">
+  <h2>Welcome back, {{ user.fullname }}!</h2>
+  <p class="text-muted">Here's where your upcoming itinerary will appear.</p>
+
+  <div class="alert alert-info mt-4">
+    ✈️ No upcoming travel added yet. This will be your mission control for
+    events, flights, check-in times, and more.
+  </div>
+
+  <a
+    href="{{ url_for('main.settings') }}"
+    class="btn btn-outline-secondary mt-3"
+    >Account Settings</a
+  >
+</div>
+{% endblock %}

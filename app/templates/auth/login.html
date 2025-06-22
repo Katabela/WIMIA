@@ -1,0 +1,31 @@
+{% extends 'auth/auth_base.html' %} {% block auth_title %}Welcome Back!{%
+endblock %} {% block auth_subtitle %}Let’s get you to your itinerary ✈️{%
+endblock %} {% block auth_content %}
+<form method="POST">
+  <div class="mb-3">
+    <label for="email">Email</label>
+    <input type="email" name="email" class="form-control" required />
+  </div>
+
+  <div class="mb-3">
+    <label for="password">Password</label>
+    <input type="password" name="password" class="form-control" required />
+  </div>
+
+  <div class="form-check mb-3">
+    <input
+      class="form-check-input"
+      type="checkbox"
+      name="remember"
+      id="remember"
+    />
+    <label class="form-check-label" for="remember">Remember Me</label>
+  </div>
+
+  <button type="submit" class="btn btn-primary w-100">Log In</button>
+</form>
+<p class="text-center mt-3">
+  Don’t have an account?
+  <a href="{{ url_for('auth.register') }}">Sign up here</a>
+</p>
+{% endblock %}
