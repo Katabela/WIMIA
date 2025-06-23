@@ -1,0 +1,51 @@
+{% extends "partials/base.html" %} {% block title %}Admin Dashboard{% endblock
+%} {% block content %}
+<div class="container mt-5">
+  <h2 class="mb-4">Admin Dashboard</h2>
+
+  <h4>Events</h4>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Location</th>
+        <th>Dates</th>
+        <th>Cheer Level</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for event in events %}
+      <tr>
+        <td>{{ event.name }}</td>
+        <td>{{ event.location }}</td>
+        <td>{{ event.start_date }} to {{ event.end_date }}</td>
+        <td>{{ event.cheer_level }}</td>
+        <td>
+          <a
+            href="{{ url_for('admin.edit_event', event_id=event.id) }}"
+            class="btn btn-sm btn-warning"
+            >Edit</a
+          >
+          <a
+            href="{{ url_for('admin.delete_event', event_id=event.id) }}"
+            class="btn btn-sm btn-danger"
+            >Delete</a
+          >
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <a href="{{ url_for('admin.add_event') }}" class="btn btn-primary"
+    >Add New Event</a
+  >
+
+  <hr />
+  <h4>Assign Users</h4>
+  <a href="{{ url_for('admin.assign_user') }}" class="btn btn-secondary"
+    >Assign Users to Events</a
+  >
+</div>
+{% endblock %}

@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for, request, flash, session
 from flask_login import login_user, logout_user, login_required, current_user
 from app.extensions import db
-from app.models import Users
+from app.models import User
 from app.email import send_email
 import random
 import uuid
@@ -13,7 +13,7 @@ def login():
     if request.method == "POST":
         email = request.form.get("email")
         password = request.form.get("password")
-        user = Users.query.filter_by(email=email).first()
+        user = User.query.filter_by(email=email).first()
         remember = request.form.get("remember") == "on"
 
         if user and user.check_password(password):
@@ -38,7 +38,7 @@ def register():
             flash("Passwords do not match!", "danger")
             return redirect(url_for("auth.register"))
 
-        existing_user = Users.query.filter_by(email=email).first()
+        existing_user = User.query.filter_by(email=email).first()
         if existing_user:
             flash("Email already exists.", "danger")
             return redirect(url_for("auth.register"))
@@ -82,7 +82,7 @@ def verify_email():
     if request.method == "POST":
         code = request.form.get("code")
         if temp_user["verification_code"] == code:
-            new_user = Users(
+            new_user = User(
                 email=temp_user["email"],
                 fullname=temp_user["fullname"],
                 email_opt_in=temp_user["email_opt_in"],

@@ -2,14 +2,17 @@ from app.extensions import db, login_manager
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 
-class Users(UserMixin, db.Model):
+class User(UserMixin, db.Model):
     __tablename__ = "users"
-    
+
     id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(120), unique=True, nullable=False)
     fullname = db.Column(db.String(120), nullable=False)
-    password_hash = db.Column(db.String(128), nullable=False)
-    email_opt_in = db.Column(db.Boolean, default=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    password_hash = db.Column(db.String(512), nullable=False)
+    role = db.Column(db.String(20), nullable=False, default="employee")
+    email_opt_in = db.Column(db.Boolean, default=True)
+
+    assignments = db.relationship("Assignment", back_populates="user")
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -17,6 +20,49 @@ class Users(UserMixin, db.Model):
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
 
+
+class Event(db.Model):
+    __tablename__ = "events"
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(150), nullable=False)
+    location = db.Column(db.String(150), nullable=False)
+    start_date = db.Column(db.Date, nullable=False)
+    end_date = db.Column(db.Date, nullable=False)
+    style = db.Column(db.String(50))
+    cheer_level = db.Column(db.String(50))
+    team_info = db.Column(db.Text)
+    created_by = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=True)
+
+    assignments = db.relationship("Assignment", back_populates="event")
+    itinerary_details = db.relationship("ItineraryDetail", back_populates="event", uselist=False)
+
+
+class Assignment(db.Model):
+    __tablename__ = "assignments"
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    event_id = db.Column(db.Integer, db.ForeignKey("events.id"), nullable=False)
+
+    user = db.relationship("User", back_populates="assignments")
+    event = db.relationship("Event", back_populates="assignments")
+
+
+class ItineraryDetail(db.Model):
+    __tablename__ = "itinerary_details"
+
+    id = db.Column(db.Integer, primary_key=True)
+    event_id = db.Column(db.Integer, db.ForeignKey("events.id"), nullable=False)
+    flight_info = db.Column(db.Text)
+    rental_car_info = db.Column(db.Text)
+    hotel_info = db.Column(db.Text)
+    pay_details = db.Column(db.Text)
+    schedule_notes = db.Column(db.Text)
+
+    event = db.relationship("Event", back_populates="itinerary_details")
+
+
 @login_manager.user_loader
 def load_user(user_id):
-    return Users.query.get(int(user_id))
+    return User.query.get(int(user_id))
