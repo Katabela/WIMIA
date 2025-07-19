@@ -1,0 +1,26 @@
+<p>Hi {{ fullname }},</p>
+
+<p>
+  This is a friendly reminder that you are scheduled for the following event in
+  {{ days_left }} day{% if days_left > 1 %}s{% endif %}:
+</p>
+
+<ul>
+  <li><strong>Event:</strong> {{ event.name }}</li>
+  <li><strong>Location:</strong> {{ event.location }}</li>
+  <li>
+    <strong>Dates:</strong> {{ event.start_date }} to {{ event.end_date }}
+  </li>
+  <li><strong>Airline:</strong> {{ event.flight_airline }}</li>
+  <li>
+    <strong>Flight Confirmation:</strong> {{ event.flight_confirmation_code }}
+  </li>
+  <li>
+    <strong>Accommodation:</strong> {{ event.accommodation_name }} - {{
+    event.accommodation_address }}
+  </li>
+</ul>
+
+<p>Make sure you're ready. Let us know if you have questions!</p>
+
+<p>Cheers,<br />WIMIA Team</p>

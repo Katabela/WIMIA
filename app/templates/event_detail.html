@@ -1,0 +1,63 @@
+{% extends 'partials/base.html' %} {% block content %}
+<div class="container mt-5 text-white">
+  <h2>{{ event.name }}</h2>
+  <p class="lead">
+    {{ event.location }} | {{ event.start_date }} → {{ event.end_date }}
+  </p>
+
+  <div class="row mt-4">
+    <div class="col-md-6">
+      <h5>Flight Info</h5>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item bg-dark text-white">
+          ✈️ Departure: {{ event.flight_departure_datetime }}
+        </li>
+        <li class="list-group-item bg-dark text-white">
+          🛬 Return: {{ event.flight_return_datetime }}
+        </li>
+        <li class="list-group-item bg-dark text-white">
+          🛫 Airline: {{ event.flight_airline }}
+        </li>
+        <li class="list-group-item bg-dark text-white">
+          🧳 Bags: {{ event.flight_bag_info }}
+        </li>
+        <li class="list-group-item bg-dark text-white">
+          🔐 Confirmation: {{ event.flight_confirmation_code }}
+        </li>
+      </ul>
+    </div>
+
+    <div class="col-md-6">
+      <h5>Accommodation</h5>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item bg-dark text-white">
+          🏨 {{ event.accommodation_name }}
+        </li>
+        <li class="list-group-item bg-dark text-white">
+          📍 {{ event.accommodation_address }}
+        </li>
+        {% if event.accommodation_airbnb_link %}
+        <li class="list-group-item bg-dark text-white">
+          🔗
+          <a
+            href="{{ event.accommodation_airbnb_link }}"
+            class="link-light"
+            target="_blank"
+            >Airbnb Link</a
+          >
+        </li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+
+  <div class="mt-4">
+    <h5>Team Info</h5>
+    <p>{{ event.team_info }}</p>
+  </div>
+
+  <a href="{{ url_for('main.dashboard') }}" class="btn btn-outline-light mt-3"
+    >⬅ Back to Dashboard</a
+  >
+</div>
+{% endblock %}

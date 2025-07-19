@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Event Updated</title>
+  </head>
+  <body>
+    <h2>Hello {{ fullname }}!</h2>
+    <p>The details of the event you are assigned to have been updated:</p>
+    <ul>
+      <li><strong>Event Name:</strong> {{ event.name }}</li>
+      <li><strong>Location:</strong> {{ event.location }}</li>
+      <li>
+        <strong>Dates:</strong> {{ event.start_date }} to {{ event.end_date }}
+      </li>
+      <li><strong>Style:</strong> {{ event.style }}</li>
+      <li><strong>Cheer Level:</strong> {{ event.cheer_level }}</li>
+      <li><strong>Team Info:</strong> {{ event.team_info }}</li>
+    </ul>
+    <p>
+      You can log in to view the event:
+      <a href="{{ domain_url }}/dashboard">{{ domain_url }}/dashboard</a>
+    </p>
+    <p>If you have questions, please contact your administrator.</p>
+  </body>
+</html>

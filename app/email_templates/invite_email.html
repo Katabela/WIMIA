@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <h2>You've been invited!</h2>
+    <p>Hello {{ fullname }},</p>
+    <p>
+      You've been added as a coach for an upcoming event in WIMIA.
+      <br />
+      Your temporary password: <strong>{{ temp_password }}</strong>
+    </p>
+    <p>
+      Please log in and update your profile:<br />
+      <a href="{{ domain_url }}/auth/login">{{ domain_url }}/auth/login</a>
+    </p>
+  </body>
+</html>

@@ -3,6 +3,13 @@
 <div class="container mt-5">
   <h2 class="mb-4">Admin Dashboard</h2>
 
+  <div class="mb-3">
+    <a href="{{ url_for('admin.add_event') }}" class="btn btn-primary">
+      ➕ Add New Event
+    </a>
+  </div>
+
+  {% if events %}
   <h4>Events</h4>
   <table class="table table-striped">
     <thead>
@@ -10,7 +17,9 @@
         <th>Name</th>
         <th>Location</th>
         <th>Dates</th>
+        <th>Flight Info</th>
         <th>Cheer Level</th>
+        <th>Assigned Coaches</th>
         <th>Actions</th>
       </tr>
     </thead>
@@ -20,32 +29,60 @@
         <td>{{ event.name }}</td>
         <td>{{ event.location }}</td>
         <td>{{ event.start_date }} to {{ event.end_date }}</td>
+        <td>
+          {{ event.flight_airline }}<br />
+          Depart: {{ event.flight_departure_datetime.strftime('%m/%d %I:%M %p')
+          if event.flight_departure_datetime else '' }}<br />
+          Return: {{ event.flight_return_datetime.strftime('%m/%d %I:%M %p') if
+          event.flight_return_datetime else '' }}<br />
+          Code: {{ event.flight_confirmation_code }}
+        </td>
         <td>{{ event.cheer_level }}</td>
+        <td>
+          {% if event.assignments %}
+          <ul class="mb-0 ps-3">
+            {% for assignment in event.assignments %}
+            <li>
+              {% if assignment.user.fullname %} {{ assignment.user.fullname }}
+              ({{ assignment.user.email }}) {% else %} {{ assignment.user.email
+              }} {% endif %}
+            </li>
+            {% endfor %}
+          </ul>
+          {% else %}
+          <em>No coaches assigned</em>
+          {% endif %}
+        </td>
         <td>
           <a
             href="{{ url_for('admin.edit_event', event_id=event.id) }}"
-            class="btn btn-sm btn-warning"
+            class="btn btn-sm btn-secondary"
             >Edit</a
           >
+          <form
+            action="{{ url_for('admin.delete_event', event_id=event.id) }}"
+            method="POST"
+            style="display: inline"
+          >
+            <button
+              class="btn btn-sm btn-danger"
+              onclick="return confirm('Delete this event?')"
+            >
+              Delete
+            </button>
+          </form>
           <a
-            href="{{ url_for('admin.delete_event', event_id=event.id) }}"
-            class="btn btn-sm btn-danger"
-            >Delete</a
+            href="{{ url_for('admin.assign_user', event_id=event.id) }}"
+            class="btn btn-sm btn-info"
+            >Assign User</a
           >
         </td>
       </tr>
       {% endfor %}
     </tbody>
   </table>
-
-  <a href="{{ url_for('admin.add_event') }}" class="btn btn-primary"
-    >Add New Event</a
-  >
-
-  <hr />
-  <h4>Assign Users</h4>
-  <a href="{{ url_for('admin.assign_user') }}" class="btn btn-secondary"
-    >Assign Users to Events</a
-  >
+  {% else %}
+  <p>No events found. Click “Add New Event” to create one.</p>
+  {% endif %}
 </div>
 {% endblock %}

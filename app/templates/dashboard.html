@@ -1,12 +1,37 @@
 {% extends 'partials/base.html' %} {% block content %}
 <div class="container mt-5">
   <h2>Welcome back, {{ user.fullname }}!</h2>
-  <p class="text-muted">Here's where your upcoming itinerary will appear.</p>
+  <p>Here's your upcoming itinerary:</p>
 
-  <div class="alert alert-info mt-4">
-    ✈️ No upcoming travel added yet. This will be your mission control for
-    events, flights, check-in times, and more.
+  {% if events %}
+  <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mt-4">
+    {% for event in events %}
+    <div class="col">
+      <div class="card h-100 bg-dark text-white border-white">
+        <div class="card-body">
+          <h5 class="card-title">{{ event.name }}</h5>
+          <p class="card-text">
+            📍 {{ event.location }}<br />
+            🗓 {{ event.start_date.strftime('%b %d, %Y') }} – {{
+            event.end_date.strftime('%b %d, %Y') }}<br />
+            Cheer Level: {{ event.cheer_level }}
+          </p>
+          <a
+            href="{{ url_for('main.event_detail', event_id=event.id) }}"
+            class="btn btn-outline-light btn-sm"
+            >View Details</a
+          >
+        </div>
+      </div>
+    </div>
+    {% endfor %}
   </div>
+  {% else %}
+  <div class="alert mt-4 text-white border border-white">
+    ✈️ No upcoming events yet. This will be your mission control for trips,
+    flights, and assignments.
+  </div>
+  {% endif %}
 
   <a
     href="{{ url_for('main.settings') }}"

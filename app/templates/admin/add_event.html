@@ -1,0 +1,10 @@
+{% extends "partials/base.html" %} {% block title %}Add Event{% endblock %} {%
+block content %}
+<div class="container mt-4">
+  <h2>Add Event</h2>
+  <form method="POST">
+    {% include "admin/_event_form.html" %}
+    <button type="submit" class="btn btn-primary">Create Event</button>
+  </form>
+</div>
+{% endblock %}

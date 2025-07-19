@@ -1,0 +1,178 @@
+<div class="mb-3">
+  <label>Name</label>
+  <input
+    type="text"
+    name="name"
+    value="{{ event.name if event else '' }}"
+    class="form-control"
+    required
+  />
+</div>
+<div class="mb-3">
+  <label>Location</label>
+  <input
+    type="text"
+    name="location"
+    value="{{ event.location if event else '' }}"
+    class="form-control"
+    required
+  />
+</div>
+<div class="mb-3">
+  <label>Start Date</label>
+  <input
+    type="date"
+    name="start_date"
+    value="{{ event.start_date if event else '' }}"
+    class="form-control"
+    required
+  />
+</div>
+<div class="mb-3">
+  <label>End Date</label>
+  <input
+    type="date"
+    name="end_date"
+    value="{{ event.end_date if event else '' }}"
+    class="form-control"
+    required
+  />
+</div>
+<!-- Flight Info -->
+<h5 class="mt-4">Flight Information</h5>
+<div class="mb-3">
+  <label>Departure Date & Time</label>
+  <input
+    type="datetime-local"
+    name="flight_departure_datetime"
+    class="form-control"
+    value="{{ event.flight_departure_datetime.strftime('%Y-%m-%dT%H:%M') if event and event.flight_departure_datetime else '' }}"
+  />
+</div>
+<div class="mb-3">
+  <label>Return Date & Time</label>
+  <input
+    type="datetime-local"
+    name="flight_return_datetime"
+    class="form-control"
+    value="{{ event.flight_return_datetime.strftime('%Y-%m-%dT%H:%M') if event and event.flight_return_datetime else '' }}"
+  />
+</div>
+<div class="mb-3">
+  <label>Airline</label>
+  <input
+    type="text"
+    name="flight_airline"
+    class="form-control"
+    value="{{ event.flight_airline if event else '' }}"
+  />
+</div>
+<div class="mb-3">
+  <label>Bag Info</label>
+  <input
+    type="text"
+    name="flight_bag_info"
+    class="form-control"
+    value="{{ event.flight_bag_info if event else '' }}"
+  />
+</div>
+<div class="mb-3">
+  <label>Confirmation Code</label>
+  <input
+    type="text"
+    name="flight_confirmation_code"
+    class="form-control"
+    value="{{ event.flight_confirmation_code if event else '' }}"
+  />
+</div>
+
+<!-- Accommodation Info -->
+<h5 class="mt-4">Accommodation</h5>
+<div class="mb-3">
+  <label>Accommodation Name</label>
+  <input
+    type="text"
+    name="accommodation_name"
+    class="form-control"
+    value="{{ event.accommodation_name if event else '' }}"
+  />
+</div>
+<div class="mb-3">
+  <label>Accommodation Address</label>
+  <input
+    type="text"
+    name="accommodation_address"
+    class="form-control"
+    value="{{ event.accommodation_address if event else '' }}"
+  />
+</div>
+<div class="mb-3">
+  <label>Airbnb Link (Optional)</label>
+  <input
+    type="url"
+    name="accommodation_airbnb_link"
+    class="form-control"
+    placeholder="www.airbnb.com/"
+  />
+</div>
+
+<div class="mb-3">
+  <label>Style</label>
+  <input
+    type="text"
+    name="style"
+    value="{{ event.style if event else '' }}"
+    class="form-control"
+  />
+</div>
+<div class="mb-3">
+  <label>Cheer Level</label>
+  <input
+    type="text"
+    name="cheer_level"
+    value="{{ event.cheer_level if event else '' }}"
+    class="form-control"
+  />
+</div>
+<div class="mb-3">
+  <label>Team Info</label>
+  <textarea name="team_info" class="form-control">
+{{ event.team_info if event else '' }}</textarea
+  >
+</div>
+<div class="mb-3">
+  <label>Assign Existing Coaches</label>
+  <select name="assigned_users" class="form-select" multiple>
+    {% set assigned_ids = event.assignments | map(attribute='user_id') | list if
+    event else [] %} {% for user in users %}
+    <option
+      value="{{ user.id }}"
+      {%
+      if
+      user.id
+      in
+      assigned_ids
+      %}
+      selected
+      {%
+      endif
+      %}
+    >
+      {{ user.fullname }} ({{ user.email }})
+    </option>
+    {% endfor %}
+  </select>
+</div>
+
+<div class="mb-3">
+  <label>Invite New Coach by Email</label>
+  <input
+    type="email"
+    name="new_invite_email"
+    class="form-control"
+    placeholder="coach@example.com"
+  />
+  <small class="form-text text-muted"
+    >If the coach isn’t in the system, enter their email to invite them.</small
+  >
+</div>

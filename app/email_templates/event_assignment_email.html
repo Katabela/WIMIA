@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>You Have Been Assigned to an Event</title>
+  </head>
+  <body>
+    <h2>Hello {{ fullname }}!</h2>
+    <p>You have been assigned to the event:</p>
+    <ul>
+      <li><strong>Event Name:</strong> {{ event.name }}</li>
+      <li><strong>Location:</strong> {{ event.location }}</li>
+      <li>
+        <strong>Dates:</strong> {{ event.start_date }} to {{ event.end_date }}
+      </li>
+      <li><strong>Style:</strong> {{ event.style }}</li>
+      <li><strong>Cheer Level:</strong> {{ event.cheer_level }}</li>
+      <li><strong>Team Info:</strong> {{ event.team_info }}</li>
+    </ul>
+    {% if temp_password %}
+    <p>
+      Your temporary password is: <strong>{{ temp_password }}</strong><br />
+      You can log in here:
+      <a href="{{ domain_url }}/auth/login">{{ domain_url }}/auth/login</a>
+    </p>
+    {% endif %}
+    <p>If you have any questions, please contact your administrator.</p>
+  </body>
+</html>
