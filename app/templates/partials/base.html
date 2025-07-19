@@ -34,6 +34,10 @@
   </head>
 
   <body>
+    <p style="color: red">
+      User: {{ current_user.email }} | Role: {{ current_user.role }} |
+      Authenticated: {{ current_user.is_authenticated }}
+    </p>
     {% if current_user.is_authenticated %} {% include "partials/_navbar.html" %}
     {% endif %}
 
