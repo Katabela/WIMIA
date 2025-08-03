@@ -8,7 +8,8 @@
     required
   />
 </div>
-<div class="mb-3">
+
+<div class="mb-4">
   <label>Location</label>
   <input
     type="text"
@@ -18,106 +19,199 @@
     required
   />
 </div>
-<div class="mb-3">
-  <label>Start Date</label>
-  <input
-    type="date"
-    name="start_date"
-    value="{{ event.start_date if event else '' }}"
-    class="form-control"
-    required
-  />
+
+<!-- Event Days -->
+<div id="event-days-container">
+  {% for i, day in enumerate(event.event_days if event else []) %}
+  <div class="mb-3 day-entry">
+    <label class="form-label w-100">Day {{ i + 1 }}</label>
+    <div class="input-group mb-2">
+      <span class="input-group-text">Start</span>
+      <input
+        type="datetime-local"
+        name="event_start_times"
+        value="{{ day.start_datetime.strftime('%Y-%m-%dT%H:%M') }}"
+        class="form-control"
+        required
+      />
+      <span class="input-group-text">End</span>
+      <input
+        type="datetime-local"
+        name="event_end_times"
+        value="{{ day.end_datetime.strftime('%Y-%m-%dT%H:%M') }}"
+        class="form-control"
+        required
+      />
+      <button type="button" class="btn btn-danger remove-day">Remove</button>
+    </div>
+  </div>
+  {% endfor %} {% if not event %}
+  <div class="mb-3 day-entry">
+    <label class="form-label w-100">Day 1</label>
+    <div class="input-group mb-2">
+      <span class="input-group-text">Start</span>
+      <input
+        type="datetime-local"
+        name="event_start_times"
+        class="form-control"
+        required
+      />
+      <span class="input-group-text">End</span>
+      <input
+        type="datetime-local"
+        name="event_end_times"
+        class="form-control"
+        required
+      />
+      <button type="button" class="btn btn-danger remove-day">Remove</button>
+    </div>
+  </div>
+  {% endif %}
 </div>
-<div class="mb-3">
-  <label>End Date</label>
-  <input
-    type="date"
-    name="end_date"
-    value="{{ event.end_date if event else '' }}"
-    class="form-control"
-    required
-  />
-</div>
+
+<button type="button" class="btn btn-secondary mb-4" onclick="addEventDay()">
+  ➕ Add Day
+</button>
+
 <!-- Flight Info -->
 <h5 class="mt-4">Flight Information</h5>
-<div class="mb-3">
-  <label>Departure Date & Time</label>
-  <input
-    type="datetime-local"
-    name="flight_departure_datetime"
-    class="form-control"
-    value="{{ event.flight_departure_datetime.strftime('%Y-%m-%dT%H:%M') if event and event.flight_departure_datetime else '' }}"
-  />
+
+<!-- Container that will hold multiple flight-entry blocks -->
+<div id="flight-info-container">
+  <datalist id="users-emails">
+    {% for user in users %}
+    <option value="{{ user.email }}">
+      {{ user.fullname }} ({{ user.email }})
+    </option>
+    {% endfor %}
+  </datalist>
+  <div class="flight-entry mb-4 border rounded p-3">
+    <label>Email</label>
+    <input
+      type="email"
+      name="flight_email"
+      class="form-control mb-2"
+      list="users-emails"
+      value="{{ flight.email if flight else '' }}"
+      required
+    />
+    <label>Name (Optional)</label>
+    <input
+      type="text"
+      name="flight_name"
+      class="form-control mb-2"
+      value="{{ flight.name if flight else '' }}"
+    />
+
+    <label>Departure Date & Time</label>
+    <input
+      type="datetime-local"
+      name="flight_departure_datetime"
+      class="form-control mb-2"
+      value="{{ flight.flight_departure_datetime.strftime('%Y-%m-%dT%H:%M') if flight and flight.flight_departure_datetime else '' }}"
+    />
+
+    <label>Return Date & Time</label>
+    <input
+      type="datetime-local"
+      name="flight_return_datetime"
+      class="form-control mb-2"
+      value="{{ flight.flight_return_datetime.strftime('%Y-%m-%dT%H:%M') if flight and flight.flight_return_datetime else '' }}"
+    />
+
+    <label>Airline</label>
+    <input
+      type="text"
+      name="flight_airline"
+      class="form-control mb-2"
+      value="{{ flight.flight_airline if flight else '' }}"
+    />
+
+    <label>Bag Info</label><br />
+    {% set bags = flight.flight_bag_info.split(',') if flight and
+    flight.flight_bag_info else [] %}
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="checkbox" name="flight_bag_info"
+      value="personal" {% if 'personal' in bags %}checked{% endif %} />
+      <label class="form-check-label">Personal Item</label>
+    </div>
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="checkbox" name="flight_bag_info"
+      value="carry_on" {% if 'carry_on' in bags %}checked{% endif %} />
+      <label class="form-check-label">Carry-On</label>
+    </div>
+    <div class="form-check form-check-inline">
+      <input class="form-check-input" type="checkbox" name="flight_bag_info"
+      value="checked" {% if 'checked' in bags %}checked{% endif %} />
+      <label class="form-check-label">Checked Luggage</label>
+    </div>
+
+    <label class="mt-2">Confirmation Code</label>
+    <input
+      type="text"
+      name="flight_confirmation_code"
+      class="form-control mb-2"
+      value="{{ flight.flight_confirmation_code if flight else '' }}"
+    />
+
+    <button type="button" class="btn btn-danger remove-flight-entry">
+      Remove
+    </button>
+    <hr />
+  </div>
 </div>
-<div class="mb-3">
-  <label>Return Date & Time</label>
-  <input
-    type="datetime-local"
-    name="flight_return_datetime"
-    class="form-control"
-    value="{{ event.flight_return_datetime.strftime('%Y-%m-%dT%H:%M') if event and event.flight_return_datetime else '' }}"
-  />
-</div>
-<div class="mb-3">
-  <label>Airline</label>
+
+<button type="button" class="btn btn-secondary mt-3" onclick="addFlightEntry()">
+  ➕ Add Another Flight
+</button>
+
+<!-- Rental Car -->
+<h5 class="mt-4">Rental Car</h5>
+<div class="mb-4">
+  <label>Rental Car Info</label>
   <input
     type="text"
-    name="flight_airline"
+    name="rental_car_info"
     class="form-control"
-    value="{{ event.flight_airline if event else '' }}"
-  />
-</div>
-<div class="mb-3">
-  <label>Bag Info</label>
-  <input
-    type="text"
-    name="flight_bag_info"
-    class="form-control"
-    value="{{ event.flight_bag_info if event else '' }}"
-  />
-</div>
-<div class="mb-3">
-  <label>Confirmation Code</label>
-  <input
-    type="text"
-    name="flight_confirmation_code"
-    class="form-control"
-    value="{{ event.flight_confirmation_code if event else '' }}"
+    value="{{ event.rental_car_info if event else '' }}"
   />
 </div>
 
-<!-- Accommodation Info -->
+<!-- Accommodation -->
 <h5 class="mt-4">Accommodation</h5>
-<div class="mb-3">
-  <label>Accommodation Name</label>
-  <input
-    type="text"
-    name="accommodation_name"
-    class="form-control"
-    value="{{ event.accommodation_name if event else '' }}"
-  />
-</div>
-<div class="mb-3">
-  <label>Accommodation Address</label>
-  <input
-    type="text"
-    name="accommodation_address"
-    class="form-control"
-    value="{{ event.accommodation_address if event else '' }}"
-  />
-</div>
-<div class="mb-3">
-  <label>Airbnb Link (Optional)</label>
-  <input
-    type="url"
-    name="accommodation_airbnb_link"
-    class="form-control"
-    placeholder="www.airbnb.com/"
-  />
+<div class="mb-4 border rounded p-3">
+  <div>
+    <label>Accommodation Name</label>
+    <input
+      type="text"
+      name="accommodation_name"
+      class="form-control"
+      value="{{ event.accommodation_name if event else '' }}"
+    />
+  </div>
+  <div class="mb-3">
+    <label>Accommodation Address</label>
+    <input
+      type="text"
+      name="accommodation_address"
+      class="form-control"
+      value="{{ event.accommodation_address if event else '' }}"
+    />
+  </div>
+  <div class="mb-3">
+    <label>Airbnb Link (Optional)</label>
+    <input
+      type="url"
+      name="accommodation_airbnb_link"
+      class="form-control"
+      placeholder="www.airbnb.com/"
+    />
+  </div>
 </div>
 
+<!-- Style & Team Info -->
 <div class="mb-3">
-  <label>Style</label>
+  <label>Style (COED/ ALL GIRL)</label>
   <input
     type="text"
     name="style"
@@ -140,6 +234,56 @@
 {{ event.team_info if event else '' }}</textarea
   >
 </div>
+
+<!-- Coach Contact -->
+<h5 class="mt-4">Coach Contact</h5>
+<div class="mb-4 border rounded p-3">
+  <div>
+    <label>Coach Name</label>
+    <input
+      type="text"
+      name="coach_name"
+      class="form-control"
+      value="{{ event.coach_name if event else '' }}"
+    />
+  </div>
+  <div class="mb-3">
+    <label>Coach Email</label>
+    <input
+      type="email"
+      name="coach_email"
+      class="form-control"
+      value="{{ event.coach_email if event else '' }}"
+    />
+  </div>
+  <div class="mb-3">
+    <label>Coach Phone</label>
+    <input
+      type="text"
+      name="coach_phone"
+      class="form-control"
+      value="{{ event.coach_phone if event else '' }}"
+    />
+  </div>
+</div>
+
+<!-- Schedule Upload -->
+<div class="mb-4">
+  <label>Schedule Upload (PDF or Doc)</label>
+  <input
+    type="file"
+    name="schedule_file"
+    accept=".pdf,.doc,.docx"
+    class="form-control"
+  />
+  {% if event and event.schedule_file %}
+  <small class="form-text text-muted"
+    >Current file: {{ event.schedule_file }}</small
+  >
+  {% endif %}
+</div>
+
+<!-- User Assignment -->
 <div class="mb-3">
   <label>Assign Existing Coaches</label>
   <select name="assigned_users" class="form-select" multiple>
@@ -152,9 +296,7 @@
       user.id
       in
       assigned_ids
-      %}
-      selected
-      {%
+      %}selected{%
       endif
       %}
     >
@@ -164,6 +306,7 @@
   </select>
 </div>
 
+<!-- New Invite -->
 <div class="mb-3">
   <label>Invite New Coach by Email</label>
   <input

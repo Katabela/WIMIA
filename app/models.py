@@ -27,30 +27,55 @@ class Event(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(150), nullable=False)
     location = db.Column(db.String(150), nullable=False)
-    start_date = db.Column(db.Date, nullable=False)
-    end_date = db.Column(db.Date, nullable=False)
 
-    # Flight Info
+    # Event Details
+    alternate_travel = db.Column(db.Text)
+    accommodation_name = db.Column(db.String(150), nullable=True)
+    accommodation_address = db.Column(db.String(255), nullable=True)
+    accommodation_airbnb_link = db.Column(db.String, nullable=True)
+    rental_car_info = db.Column(db.String(255))
+    coach_name = db.Column(db.String(100))
+    coach_email = db.Column(db.String(100))
+    coach_phone = db.Column(db.String(50))
+    style = db.Column(db.String(50), nullable=True)
+    cheer_level = db.Column(db.String(50), nullable=True)
+    team_info = db.Column(db.Text, nullable=True)
+    schedule_file = db.Column(db.String(255), nullable=True)
+
+    created_by = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=True)
+
+    assignments = db.relationship("Assignment", back_populates="event")
+    itinerary_details = db.relationship("ItineraryDetail", back_populates="event", uselist=False)
+    event_days = db.relationship("EventDay", backref="event", lazy=True)
+    flights = db.relationship("FlightInfo", back_populates="event")
+
+
+class FlightInfo(db.Model):
+    __tablename__ = "flight_info"
+
+    id = db.Column(db.Integer, primary_key=True)
+    event_id = db.Column(db.Integer, db.ForeignKey("events.id"), nullable=False)
+
+    email = db.Column(db.String(255), nullable=False)
+    name = db.Column(db.String(100), nullable=True)
+
     flight_departure_datetime = db.Column(db.DateTime, nullable=True)
     flight_return_datetime = db.Column(db.DateTime, nullable=True)
     flight_airline = db.Column(db.String(100), nullable=True)
     flight_bag_info = db.Column(db.String(255), nullable=True)
     flight_confirmation_code = db.Column(db.String(100), nullable=True)
 
-    # Accommodation Info
-    accommodation_name = db.Column(db.String(150), nullable=True)
-    accommodation_address = db.Column(db.String(255), nullable=True)
-    accommodation_airbnb_link = db.Column(db.String, nullable=True)
+    event = db.relationship("Event", back_populates="flights")
 
-    # Event Details
-    style = db.Column(db.String(50), nullable=True)
-    cheer_level = db.Column(db.String(50), nullable=True)
-    team_info = db.Column(db.Text, nullable=True)
 
-    created_by = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=True)
+class EventDay(db.Model):
+    __tablename__ = "event_days"
 
-    assignments = db.relationship("Assignment", back_populates="event")
-    itinerary_details = db.relationship("ItineraryDetail", back_populates="event", uselist=False)
+    id = db.Column(db.Integer, primary_key=True)
+    event_id = db.Column(db.Integer, db.ForeignKey("events.id"), nullable=False)
+    day_number = db.Column(db.Integer, nullable=False)
+    start_datetime = db.Column(db.DateTime, nullable=False)
+    end_datetime = db.Column(db.DateTime, nullable=False)
 
 
 class Assignment(db.Model):
@@ -69,6 +94,7 @@ class ItineraryDetail(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     event_id = db.Column(db.Integer, db.ForeignKey("events.id"), nullable=False)
+
     flight_info = db.Column(db.Text)
     rental_car_info = db.Column(db.Text)
     hotel_info = db.Column(db.Text)
@@ -76,7 +102,6 @@ class ItineraryDetail(db.Model):
     schedule_notes = db.Column(db.Text)
 
     event = db.relationship("Event", back_populates="itinerary_details")
-
 
 
 @login_manager.user_loader

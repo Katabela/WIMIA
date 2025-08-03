@@ -1,5 +1,8 @@
 {% extends 'partials/base.html' %} {% block content %}
 <div class="container mt-5 text-white">
+  <a href="{{ url_for('main.dashboard') }}" class="btn btn-outline-light mt-3"
+    >⬅ Back to Dashboard</a
+  >
   <h2>{{ event.name }}</h2>
   <p class="lead">
     {{ event.location }} | {{ event.start_date }} → {{ event.end_date }}
@@ -8,23 +11,63 @@
   <div class="row mt-4">
     <div class="col-md-6">
       <h5>Flight Info</h5>
-      <ul class="list-group list-group-flush">
-        <li class="list-group-item bg-dark text-white">
-          ✈️ Departure: {{ event.flight_departure_datetime }}
-        </li>
-        <li class="list-group-item bg-dark text-white">
-          🛬 Return: {{ event.flight_return_datetime }}
-        </li>
-        <li class="list-group-item bg-dark text-white">
-          🛫 Airline: {{ event.flight_airline }}
-        </li>
-        <li class="list-group-item bg-dark text-white">
-          🧳 Bags: {{ event.flight_bag_info }}
-        </li>
-        <li class="list-group-item bg-dark text-white">
-          🔐 Confirmation: {{ event.flight_confirmation_code }}
-        </li>
-      </ul>
+      {% if event.flights %}
+      <div class="accordion" id="flightInfoAccordion">
+        {% for i, flight in enumerate(event.flights) %}
+        <div class="accordion-item bg-dark text-white">
+          <h2 class="accordion-header" id="heading{{ i }}">
+            <button
+              class="accordion-button collapsed bg-dark text-white"
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#collapse{{ i }}"
+              aria-expanded="false"
+              aria-controls="collapse{{ i }}"
+            >
+              {{ flight.name or "Unnamed" }} — {{ flight.email }}
+            </button>
+          </h2>
+          <div
+            id="collapse{{ i }}"
+            class="accordion-collapse collapse"
+            aria-labelledby="heading{{ i }}"
+            data-bs-parent="#flightInfoAccordion"
+          >
+            <div class="accordion-body">
+              <ul class="list-group list-group-flush">
+                {% if flight.flight_departure_datetime %}
+                <li class="list-group-item bg-dark text-white">
+                  ✈️ Departure: {{
+                  flight.flight_departure_datetime.strftime('%A, %b %d %I:%M
+                  %p') }}
+                </li>
+                {% endif %} {% if flight.flight_return_datetime %}
+                <li class="list-group-item bg-dark text-white">
+                  🛬 Return: {{ flight.flight_return_datetime.strftime('%A, %b
+                  %d %I:%M %p') }}
+                </li>
+                {% endif %} {% if flight.flight_airline %}
+                <li class="list-group-item bg-dark text-white">
+                  🛫 Airline: {{ flight.flight_airline }}
+                </li>
+                {% endif %} {% if flight.flight_bag_info %}
+                <li class="list-group-item bg-dark text-white">
+                  🧳 Bags: {{ flight.flight_bag_info | replace(',', ', ') }}
+                </li>
+                {% endif %} {% if flight.flight_confirmation_code %}
+                <li class="list-group-item bg-dark text-white">
+                  🔐 Confirmation: {{ flight.flight_confirmation_code }}
+                </li>
+                {% endif %}
+              </ul>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <p>No flight information available for this event.</p>
+      {% endif %}
     </div>
 
     <div class="col-md-6">
@@ -55,9 +98,27 @@
     <h5>Team Info</h5>
     <p>{{ event.team_info }}</p>
   </div>
-
-  <a href="{{ url_for('main.dashboard') }}" class="btn btn-outline-light mt-3"
-    >⬅ Back to Dashboard</a
+  {% if event.event_days %}
+  <div class="mt-4">
+    <h5>Daily Schedule</h5>
+    <ul class="list-group list-group-flush">
+      {% for day in event.event_days|sort(attribute="day_number") %}
+      <li class="list-group-item bg-dark text-white">
+        Day {{ day.day_number }}: {{ day.start_datetime.strftime("%A, %b %d")
+        }}<br />
+        🕒 {{ day.start_datetime.strftime("%I:%M %p") }} → {{
+        day.end_datetime.strftime("%I:%M %p") }}
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %} {% if event.schedule_file %}
+  <a
+    href="{{ url_for('static', filename='uploads/' + event.schedule_file) }}"
+    target="_blank"
   >
+    View Schedule File
+  </a>
+  {% endif %}
 </div>
 {% endblock %}

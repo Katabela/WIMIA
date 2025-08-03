@@ -2,25 +2,194 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>Event Updated</title>
+    <title>Your Event {{ event.name }} Has Been Updated</title>
   </head>
-  <body>
-    <h2>Hello {{ fullname }}!</h2>
-    <p>The details of the event you are assigned to have been updated:</p>
-    <ul>
-      <li><strong>Event Name:</strong> {{ event.name }}</li>
-      <li><strong>Location:</strong> {{ event.location }}</li>
-      <li>
-        <strong>Dates:</strong> {{ event.start_date }} to {{ event.end_date }}
-      </li>
-      <li><strong>Style:</strong> {{ event.style }}</li>
-      <li><strong>Cheer Level:</strong> {{ event.cheer_level }}</li>
-      <li><strong>Team Info:</strong> {{ event.team_info }}</li>
-    </ul>
-    <p>
-      You can log in to view the event:
-      <a href="{{ domain_url }}/dashboard">{{ domain_url }}/dashboard</a>
-    </p>
-    <p>If you have questions, please contact your administrator.</p>
+  <body
+    style="
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+      margin: 0;
+      padding: 0;
+    "
+  >
+    <table
+      width="100%"
+      cellpadding="0"
+      cellspacing="0"
+      style="background-color: #f5f5f5; padding: 40px 0"
+    >
+      <tr>
+        <td align="center">
+          <table
+            width="600"
+            cellpadding="0"
+            cellspacing="0"
+            style="
+              background-color: #ffffff;
+              border-radius: 8px;
+              overflow: hidden;
+              box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            "
+          >
+            <tr>
+              <td
+                style="
+                  background-color: #222;
+                  color: #fff;
+                  padding: 20px;
+                  text-align: center;
+                "
+              >
+                <h2 style="margin: 0; font-size: 24px">Updated Event!</h2>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding: 30px">
+                <p style="font-size: 16px">
+                  Hey <strong>{{ fullname }}</strong>,
+                </p>
+                <p style="font-size: 16px">
+                  You’ve been assigned to the following event:
+                </p>
+
+                <table style="width: 100%; font-size: 15px; margin-top: 20px">
+                  <tr>
+                    <td><strong>Event Name:</strong></td>
+                    <td>{{ event.name }}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Location:</strong></td>
+                    <td>{{ event.location }}</td>
+                  </tr>
+                  {% if event.event_days %}
+                  <tr>
+                    <td valign="top"><strong>Dates:</strong></td>
+                    <td>
+                      <ul style="padding-left: 20px; margin: 0">
+                        {% for day in event.event_days %}
+                        <li>
+                          Day {{ loop.index }}: {{
+                          day.start_datetime.strftime('%b %d, %Y %I:%M %p') }} –
+                          {{ day.end_datetime.strftime('%I:%M %p') }}
+                        </li>
+                        {% endfor %}
+                      </ul>
+                    </td>
+                  </tr>
+                  {% endif %}
+                  <tr>
+                    <td><strong>Style:</strong></td>
+                    <td>{{ event.style }}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Cheer Level:</strong></td>
+                    <td>{{ event.cheer_level }}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Team Info:</strong></td>
+                    <td>{{ event.team_info }}</td>
+                  </tr>
+                  {% if event.flight_departure_datetime %}
+                  <tr>
+                    <td><strong>Flight Depart:</strong></td>
+                    <td>
+                      {{ event.flight_departure_datetime.strftime('%b %d, %Y
+                      %I:%M %p') }}
+                    </td>
+                  </tr>
+                  {% endif %} {% if event.flight_return_datetime %}
+                  <tr>
+                    <td><strong>Flight Return:</strong></td>
+                    <td>
+                      {{ event.flight_return_datetime.strftime('%b %d, %Y %I:%M
+                      %p') }}
+                    </td>
+                  </tr>
+                  {% endif %} {% if event.flight_airline %}
+                  <tr>
+                    <td><strong>Airline:</strong></td>
+                    <td>{{ event.flight_airline }}</td>
+                  </tr>
+                  {% endif %} {% if event.flight_bag_info %}
+                  <tr>
+                    <td><strong>Bags:</strong></td>
+                    <td>{{ event.flight_bag_info }}</td>
+                  </tr>
+                  {% endif %} {% if event.flight_confirmation_code %}
+                  <tr>
+                    <td><strong>Conf. Code:</strong></td>
+                    <td>{{ event.flight_confirmation_code }}</td>
+                  </tr>
+                  {% endif %} {% if event.accommodation_name %}
+                  <tr>
+                    <td><strong>Stay:</strong></td>
+                    <td>{{ event.accommodation_name }}</td>
+                  </tr>
+                  {% endif %} {% if event.accommodation_address %}
+                  <tr>
+                    <td><strong>Address:</strong></td>
+                    <td>{{ event.accommodation_address }}</td>
+                  </tr>
+                  {% endif %} {% if event.accommodation_airbnb_link %}
+                  <tr>
+                    <td><strong>Airbnb:</strong></td>
+                    <td>
+                      <a href="{{ event.accommodation_airbnb_link }}"
+                        >{{ event.accommodation_airbnb_link }}</a
+                      >
+                    </td>
+                  </tr>
+                  {% endif %}
+                </table>
+
+                {% if temp_password %}
+                <div style="margin-top: 20px">
+                  <p style="font-size: 16px">
+                    <strong>Your temporary password:</strong> {{ temp_password
+                    }}
+                  </p>
+                </div>
+                {% endif %}
+
+                <div style="text-align: center; margin-top: 30px">
+                  <a
+                    href="{{ domain_url }}/auth/login"
+                    style="
+                      display: inline-block;
+                      padding: 12px 24px;
+                      background-color: #222;
+                      color: #fff;
+                      text-decoration: none;
+                      border-radius: 5px;
+                      font-size: 16px;
+                    "
+                  >
+                    🔑 Log In to View Your Event
+                  </a>
+                </div>
+
+                <p style="margin-top: 30px; font-size: 14px; color: #555">
+                  If you have any questions, please reach out to your
+                  administrator.
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td
+                style="
+                  background-color: #f0f0f0;
+                  text-align: center;
+                  font-size: 12px;
+                  color: #888;
+                  padding: 20px;
+                "
+              >
+                &copy; What Is My Itinerary Again (WIMIA). All rights reserved.
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
   </body>
 </html>

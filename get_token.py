@@ -2,25 +2,26 @@ import os
 import json
 from google_auth_oauthlib.flow import InstalledAppFlow
 
-# Only read/send emails
 SCOPES = ['https://www.googleapis.com/auth/gmail.send']
 
 def main():
-    # Load your downloaded credentials.json
     flow = InstalledAppFlow.from_client_secrets_file(
-        'credentials.json', SCOPES)
-    
-    creds = flow.run_local_server(port=0)
+        'credentials.json',
+        scopes=SCOPES
+    )
 
-    # Output refresh token and other details
-    print("✅ REFRESH TOKEN GENERATED:")
-    print(f"Refresh Token: {creds.refresh_token}")
-    print(f"Client ID: {creds.client_id}")
-    print(f"Client Secret: {creds.client_secret}")
+    # This starts a local server on port 8080 and catches the redirect
+    creds = flow.run_local_server(port=8080)
 
-    # Optional: Save token to token.json
-    with open('token.json', 'w') as token_file:
+    print("\n✅ REFRESH TOKEN GENERATED:")
+    print("Refresh Token:", creds.refresh_token)
+    print("Access Token:", creds.token)
+    print("Client ID:", creds.client_id)
+    print("Client Secret:", creds.client_secret)
+
+    # Save token to token.json (optional)
+    with open("token.json", "w") as token_file:
         token_file.write(creds.to_json())
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

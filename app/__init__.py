@@ -15,6 +15,7 @@ load_dotenv()
 def create_app():
     app = Flask(__name__)
     app.config.from_object('config.Config')
+    app.jinja_env.globals.update(enumerate=enumerate)
 
     db.init_app(app)
     mail.init_app(app)

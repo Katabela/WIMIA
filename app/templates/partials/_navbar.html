@@ -22,11 +22,36 @@
         </li>
 
         {% if current_user.role == "admin" %}
-        <li class="nav-item">
-          <a class="nav-link" href="{{ url_for('admin.dashboard') }}"
-            >Admin Dashboard</a
+        <li class="nav-item dropdown">
+          <a
+            class="nav-link dropdown-toggle"
+            href="#"
+            id="adminDropdown"
+            role="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
           >
+            Admin Dashboard
+          </a>
+          <ul
+            class="dropdown-menu dropdown-menu-dark"
+            aria-labelledby="adminDropdown"
+          >
+            <li>
+              <a class="dropdown-item" href="{{ url_for('admin.dashboard') }}"
+                >Admin Home</a
+              >
+            </li>
+            <li>
+              <a
+                class="dropdown-item"
+                href="{{ url_for('admin.send_signup_link') }}"
+                >Send Sign Up Link</a
+              >
+            </li>
+          </ul>
         </li>
+
         {% endif %}
 
         <li class="nav-item">

@@ -1,0 +1,12 @@
+{% extends 'partials/base.html' %} {% block content %}
+<div class="container mt-5">
+  <h2>Send Sign-Up Link</h2>
+  <form method="POST">
+    <div class="mb-3">
+      <label for="email" class="form-label">Coach's Email</label>
+      <input type="email" class="form-control" name="email" required />
+    </div>
+    <button type="submit" class="btn btn-primary">Send Invite</button>
+  </form>
+</div>
+{% endblock %}

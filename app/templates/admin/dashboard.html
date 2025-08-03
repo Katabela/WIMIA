@@ -28,15 +28,31 @@
       <tr>
         <td>{{ event.name }}</td>
         <td>{{ event.location }}</td>
-        <td>{{ event.start_date }} to {{ event.end_date }}</td>
         <td>
-          {{ event.flight_airline }}<br />
-          Depart: {{ event.flight_departure_datetime.strftime('%m/%d %I:%M %p')
-          if event.flight_departure_datetime else '' }}<br />
-          Return: {{ event.flight_return_datetime.strftime('%m/%d %I:%M %p') if
-          event.flight_return_datetime else '' }}<br />
-          Code: {{ event.flight_confirmation_code }}
+          {% set sorted_days = event.event_days |
+          sort(attribute='start_datetime') %} {% if sorted_days %} {{
+          sorted_days[0].start_datetime.strftime('%b %d, %Y %I:%M %p') }} to {{
+          sorted_days[-1].end_datetime.strftime('%b %d, %Y %I:%M %p') }} {% else
+          %}
+          <em>No dates set</em>
+          {% endif %}
         </td>
+        <td>
+          {% if event.flights %} {% for flight in event.flights %}
+          <strong>{{ flight.name or "Unnamed" }}</strong><br />
+          ✉️ {{ flight.email }}<br />
+          {{ flight.flight_airline or '—' }}<br />
+          ✈️ Depart: {{ flight.flight_departure_datetime.strftime('%m/%d %I:%M
+          %p') if flight.flight_departure_datetime else '—' }}<br />
+          Return: {{ flight.flight_return_datetime.strftime('%m/%d %I:%M %p') if
+          flight.flight_return_datetime else '—' }}<br />
+          🔐 {{ flight.flight_confirmation_code or '—' }}<br />
+          <hr class="my-1" />
+          {% endfor %} {% else %}
+          <em>No flight info</em>
+          {% endif %}
+        </td>
+
         <td>{{ event.cheer_level }}</td>
         <td>
           {% if event.assignments %}

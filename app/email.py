@@ -3,6 +3,7 @@ import base64
 from dotenv import load_dotenv
 from googleapiclient.discovery import build
 from google.oauth2.credentials import Credentials
+from google.auth.transport.requests import Request
 from jinja2 import Environment, FileSystemLoader
 
 # Load .env values
@@ -25,12 +26,22 @@ def render_email_template(template_name, **kwargs):
         return "<p>Error loading template</p>"
 
 def send_email(to_email, subject, template_name, **kwargs):
-    creds = Credentials.from_authorized_user_info({
-        "client_id": GMAIL_CLIENT_ID,
-        "client_secret": GMAIL_CLIENT_SECRET,
-        "refresh_token": GMAIL_REFRESH_TOKEN,
-        "token_uri": "https://oauth2.googleapis.com/token",
-    })
+    creds = Credentials(
+        token=None,
+        client_id=GMAIL_CLIENT_ID,
+        client_secret=GMAIL_CLIENT_SECRET,
+        refresh_token=GMAIL_REFRESH_TOKEN,
+        token_uri="https://oauth2.googleapis.com/token",
+        scopes=["https://www.googleapis.com/auth/gmail.send"]
+    )
+
+    # Refresh the access token if it's expired
+    if creds.expired and creds.refresh_token:
+        try:
+            creds.refresh(Request())
+        except Exception as e:
+            print(f"❌ Failed to refresh token: {e}")
+            return False
 
     try:
         service = build("gmail", "v1", credentials=creds)

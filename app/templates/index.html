@@ -1,21 +1,61 @@
 {% extends 'partials/base.html' %} {% block content %}
-<div class="container text-center mt-5">
-  <h3>Welcome to</h3>
-  <h1><em>What Is My Itinerary Again?</em></h1>
-  <p class="lead">
-    The easiest way to stay on top of your travel, events, and check-in times.
-  </p>
-  {% if current_user.is_authenticated %}
-  <a href="{{ url_for('main.dashboard') }}" class="btn btn-primary mt-3"
-    >Go to Dashboard</a
-  >
-  {% else %}
-  <a href="{{ url_for('auth.login') }}" class="btn btn-primary mt-3">Log In</a>
-  <a
-    href="{{ url_for('auth.register') }}"
-    class="btn btn-outline-secondary mt-3 ms-2"
-    >Sign Up</a
-  >
-  {% endif %}
+<!-- Sticky Scroll Layered Section -->
+<div class="hero-wrapper">
+  <!-- Hero 2 fixed in background -->
+  <section class="hero hero-2">
+    <div class="content">
+      <p class="scroll-quote">
+        <span class="word">The</span>
+        <span class="word">easiest</span>
+        <span class="word">way</span>
+        <span class="word">to</span>
+        <span class="word">stay</span>
+        <span class="word">on</span>
+        <span class="word">top</span>
+        <span class="word">of</span>
+        <span class="word">your</span>
+        <span class="word">travel,</span>
+        <span class="word">events,</span>
+        <span class="word">and</span>
+        <span class="word">check-in</span>
+        <span class="word">times.</span>
+      </p>
+    </div>
+  </section>
+  <section class="section-button">
+    <div class="login-dashboard">
+      <!-- Buttons -->
+      {% if current_user.is_authenticated %}
+      <a href="{{ url_for('main.dashboard') }}" class="btn btn-primary mt-3"
+        >Go to Dashboard</a
+      >
+      {% else %}
+      <a href="{{ url_for('auth.login') }}" class="btn btn-primary mt-3"
+        >Log In</a
+      >
+      <a
+        href="{{ url_for('auth.register') }}"
+        class="btn btn-outline-secondary mt-3 ms-2"
+        >Sign Up</a
+      >
+      {% endif %}
+    </div>
+  </section>
+
+  <!-- Scrollable content -->
+  <div class="scroll-container">
+    <section class="hero hero-1">
+      <div class="content">
+        <h1 class="hero-1-text">What is my itinerary again?</h1>
+      </div>
+      <!-- Animated plane -->
+      <img
+        src="{{ url_for('static', filename='images/plane.png') }}"
+        class="plane left-offset-start"
+        alt="Plane"
+      />
+    </section>
+  </div>
 </div>
+
 {% endblock %}
