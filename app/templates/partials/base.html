@@ -44,7 +44,7 @@
     {% if current_user.is_authenticated %} {% include "partials/_navbar.html" %}
     {% endif %}
 
-    <div class="main-container">
+    <div class="main-container{% if request.endpoint == 'main.index' %} landing-main-container{% endif %}">
       <!-- Flash Messages -->
       {% with messages = get_flashed_messages(with_categories=true) %} {% if
       messages %}
