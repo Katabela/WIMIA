@@ -4,8 +4,11 @@
     >⬅ Back to Dashboard</a
   >
   <h2>{{ event.name }}</h2>
+  {% set sorted_days = event.event_days | sort(attribute='start_datetime') %}
   <p class="lead">
-    {{ event.location }} | {{ event.start_date }} → {{ event.end_date }}
+    {{ event.location }}{% if sorted_days %} | {{
+    sorted_days[0].start_datetime.strftime('%b %d, %Y %I:%M %p') }} → {{
+    sorted_days[-1].end_datetime.strftime('%b %d, %Y %I:%M %p') }}{% endif %}
   </p>
 
   <div class="row mt-4">
@@ -114,7 +117,7 @@
   </div>
   {% endif %} {% if event.schedule_file %}
   <a
-    href="{{ url_for('static', filename='uploads/' + event.schedule_file) }}"
+    href="{{ url_for('main.event_schedule', event_id=event.id) }}"
     target="_blank"
   >
     View Schedule File

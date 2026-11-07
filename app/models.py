@@ -1,4 +1,4 @@
-from app.extensions import db, login_manager
+from app.extensions import db
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -12,10 +12,13 @@ class User(UserMixin, db.Model):
     role = db.Column(db.String(20), nullable=False, default="employee")
     email_opt_in = db.Column(db.Boolean, default=True)
 
-    assignments = db.relationship("Assignment", back_populates="user")
+    assignments = db.relationship("Assignment", back_populates="user", cascade="all, delete-orphan")
 
     def set_password(self, password):
-        self.password_hash = generate_password_hash(password)
+        self.password_hash = generate_password_hash(
+            password,
+            method="pbkdf2:sha256:600000",
+        )
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
@@ -44,10 +47,10 @@ class Event(db.Model):
 
     created_by = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=True)
 
-    assignments = db.relationship("Assignment", back_populates="event")
-    itinerary_details = db.relationship("ItineraryDetail", back_populates="event", uselist=False)
-    event_days = db.relationship("EventDay", backref="event", lazy=True)
-    flights = db.relationship("FlightInfo", back_populates="event")
+    assignments = db.relationship("Assignment", back_populates="event", cascade="all, delete-orphan")
+    itinerary_details = db.relationship("ItineraryDetail", back_populates="event", uselist=False, cascade="all, delete-orphan")
+    event_days = db.relationship("EventDay", backref="event", lazy=True, cascade="all, delete-orphan")
+    flights = db.relationship("FlightInfo", back_populates="event", cascade="all, delete-orphan")
 
 
 class FlightInfo(db.Model):
@@ -80,6 +83,7 @@ class EventDay(db.Model):
 
 class Assignment(db.Model):
     __tablename__ = "assignments"
+    __table_args__ = (db.UniqueConstraint("user_id", "event_id", name="uq_assignment_user_event"),)
 
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
@@ -102,8 +106,3 @@ class ItineraryDetail(db.Model):
     schedule_notes = db.Column(db.Text)
 
     event = db.relationship("Event", back_populates="itinerary_details")
-
-
-@login_manager.user_loader
-def load_user(user_id):
-    return User.query.get(int(user_id))

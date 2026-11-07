@@ -100,7 +100,7 @@ def verify_email():
 
     return render_template("auth/verify_email.html")
 
-@auth.route("/logout")
+@auth.post("/logout")
 @login_required
 def logout():
     logout_user()

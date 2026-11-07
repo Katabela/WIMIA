@@ -22,7 +22,7 @@ body {
   background: var(--bg);
   color: var(--highlight);
   overflow-x: hidden;
-  height: 200vh;
+  min-height: 100vh;
 }
 
 h1,
@@ -242,6 +242,21 @@ textarea::placeholder {
   z-index: 2;
   height: 300vh; /* ensure long enough to scroll */
   border-bottom: 0.8px solid rgb(255, 255, 255, 0.2);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .word {
+    color: var(--highlight);
+    transition: none;
+  }
+
+  .plane {
+    display: none;
+  }
 }
 
 .scroll-quote {

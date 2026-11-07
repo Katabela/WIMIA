@@ -6,6 +6,7 @@
     action="{{ url_for('main.update_profile') }}"
     class="mt-4"
   >
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
     <div class="mb-3">
       <label for="fullname" class="form-label">Full Name</label>
       <input

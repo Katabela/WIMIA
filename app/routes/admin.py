@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, url_for, request, flash, abort
+from flask import Blueprint, current_app, render_template, redirect, url_for, request, flash, abort
 from flask_login import login_required, current_user
 from app.models import Event, User, Assignment, EventDay, FlightInfo, db
 from app.utils import admin_required
@@ -6,18 +6,46 @@ from app.email import send_email
 from datetime import datetime
 import os
 import secrets
+import uuid
 from werkzeug.utils import secure_filename
 
 admin_bp = Blueprint("admin", __name__, url_prefix="/admin")
 
-UPLOAD_FOLDER = os.path.join(os.getcwd(), 'app', 'static', 'uploads')
 ALLOWED_EXTENSIONS = {'pdf', 'doc', 'docx'}
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+def save_schedule_file(file):
+    if not file or not file.filename or not allowed_file(file.filename):
+        return None
+    safe_name = secure_filename(file.filename)
+    extension = safe_name.rsplit('.', 1)[1].lower()
+    stored_name = f"{uuid.uuid4().hex}.{extension}"
+    upload_folder = current_app.config["UPLOAD_FOLDER"]
+    os.makedirs(upload_folder, exist_ok=True)
+    file.save(os.path.join(upload_folder, stored_name))
+    return stored_name
+
 def parse_datetime(value):
     return datetime.fromisoformat(value) if value else None
+
+def parse_event_days(form):
+    starts = form.getlist("event_start_times")
+    ends = form.getlist("event_end_times")
+    if not starts or len(starts) != len(ends):
+        raise ValueError("Add at least one complete event day.")
+
+    days = []
+    for start_value, end_value in zip(starts, ends):
+        start = parse_datetime(start_value)
+        end = parse_datetime(end_value)
+        if not start or not end:
+            raise ValueError("Every event day needs a start and end time.")
+        if end <= start:
+            raise ValueError("Each event day must end after it starts.")
+        days.append((start, end))
+    return days
 
 @admin_bp.route("/dashboard")
 @login_required
@@ -48,6 +76,15 @@ def dashboard():
 @admin_required
 def add_event():
     if request.method == "POST":
+        try:
+            event_days = parse_event_days(request.form)
+        except ValueError as error:
+            flash(str(error), "danger")
+            return render_template(
+                "admin/add_event.html",
+                users=User.query.filter_by(role="employee").all(),
+            ), 400
+
         event = Event(
             name=request.form["name"],
             location=request.form["location"],
@@ -67,21 +104,14 @@ def add_event():
 
 
         file = request.files.get("schedule_file")
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            filepath = os.path.join(UPLOAD_FOLDER, filename)
-            os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-            file.save(filepath)
-            event.schedule_file = filename
+        stored_name = save_schedule_file(file)
+        if stored_name:
+            event.schedule_file = stored_name
 
         db.session.add(event)
-        db.session.commit()
+        db.session.flush()
 
-        start_times = request.form.getlist("event_start_times")
-        end_times = request.form.getlist("event_end_times")
-        for i, (start_str, end_str) in enumerate(zip(start_times, end_times), start=1):
-            start_dt = datetime.fromisoformat(start_str)
-            end_dt = datetime.fromisoformat(end_str)
+        for i, (start_dt, end_dt) in enumerate(event_days, start=1):
             db.session.add(EventDay(
                 event_id=event.id,
                 day_number=i,
@@ -176,6 +206,16 @@ def edit_event(event_id):
     users = User.query.filter_by(role="employee").all()
 
     if request.method == "POST":
+        try:
+            event_days = parse_event_days(request.form)
+        except ValueError as error:
+            flash(str(error), "danger")
+            return render_template(
+                "admin/edit_event.html",
+                event=event,
+                users=users,
+            ), 400
+
         event.name = request.form.get("name")
         event.location = request.form.get("location")
         event.alternate_travel = request.form.get("alternate_travel")
@@ -192,21 +232,14 @@ def edit_event(event_id):
 
 
         file = request.files.get("schedule_file")
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            filepath = os.path.join(UPLOAD_FOLDER, filename)
-            os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-            file.save(filepath)
-            event.schedule_file = filename
+        stored_name = save_schedule_file(file)
+        if stored_name:
+            event.schedule_file = stored_name
 
         for day in event.event_days:
             db.session.delete(day)
 
-        start_times = request.form.getlist("event_start_times")
-        end_times = request.form.getlist("event_end_times")
-        for i, (start_str, end_str) in enumerate(zip(start_times, end_times), start=1):
-            start_dt = datetime.fromisoformat(start_str)
-            end_dt = datetime.fromisoformat(end_str)
+        for i, (start_dt, end_dt) in enumerate(event_days, start=1):
             db.session.add(EventDay(
                 event_id=event.id,
                 day_number=i,

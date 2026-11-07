@@ -3,6 +3,7 @@ block content %}
 <div class="container mt-4">
   <h2>Assign User to Event: {{ event.name }}</h2>
   <form method="POST">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
     <div class="mb-3">
       <label>Select User</label>
       <select name="user_id" class="form-select">

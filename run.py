@@ -1,5 +1,4 @@
 from app import create_app
-from livereload import Server
 from dotenv import load_dotenv
 import os
 
@@ -14,6 +13,8 @@ app = create_app()
 
 if __name__ == "__main__":
     if environment == "development":
+        from livereload import Server
+
         server = Server(app.wsgi_app)
         server.watch("app/**/*.py")
         server.watch("app/templates/**/*.html")

@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
   const words = document.querySelectorAll(".word");
   const plane = document.querySelector(".plane");
 

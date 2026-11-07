@@ -2,6 +2,7 @@
 endblock %} {% block auth_subtitle %}Let’s get you to your itinerary ✈️{%
 endblock %} {% block auth_content %}
 <form method="POST">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
   <div class="mb-3">
     <label for="email">Email</label>
     <input type="email" name="email" class="form-control" required />

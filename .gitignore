@@ -1,7 +1,11 @@
 venv/
+.venv/
 __pycache__/
+.DS_Store
 .env
 token.json
 get_token.py
 credentials.json
 *.pyc
+instance/*.db
+instance/uploads/

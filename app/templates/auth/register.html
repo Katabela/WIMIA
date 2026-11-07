@@ -2,6 +2,7 @@
 endblock %} {% block auth_subtitle %}Let’s get you verified!{% endblock %} {%
 block auth_content %}
 <form method="POST">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
   <div class="mb-3">
     <label for="fullname">Full Name</label>
     <input type="text" name="fullname" class="form-control" required />
