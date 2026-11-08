@@ -357,13 +357,65 @@ textarea::placeholder {
   --landing-line: rgba(255, 255, 255, 0.11);
   --landing-text: #f4f4ee;
   --landing-muted: #a8ada6;
-  --landing-accent: #d7ff65;
-  --landing-accent-dark: #11160a;
+  --landing-accent: #f1e6d2;
+  --landing-accent-dark: #18140f;
   min-height: 100vh;
   overflow: hidden;
   background: var(--landing-bg);
   color: var(--landing-text);
   font-family: "Lato", "Segoe UI", sans-serif;
+}
+
+.landing-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: #070908;
+  animation: landing-loader-exit 500ms 1.65s ease forwards;
+}
+
+.landing-loader::before {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 50% 55%, rgba(241, 230, 210, 0.07), transparent 31%),
+    linear-gradient(90deg, transparent 49.9%, rgba(255, 255, 255, 0.03) 50%, transparent 50.1%);
+  content: "";
+}
+
+.landing-loader-route {
+  position: absolute;
+  top: 50%;
+  left: -10%;
+  width: 120%;
+  border-top: 1px dashed rgba(241, 230, 210, 0.22);
+  transform: rotate(-4deg);
+  animation: landing-route-drift 1.7s ease-out both;
+}
+
+.landing-loader-plane {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: clamp(120px, 15vw, 210px);
+  height: auto;
+  filter: drop-shadow(0 16px 30px rgba(0, 0, 0, 0.5));
+  transform: translate(-140%, 15%) rotate(-8deg);
+  animation: landing-plane-cross 1.65s cubic-bezier(0.5, 0.02, 0.45, 0.98) forwards;
+}
+
+.landing-loader-wordmark {
+  position: relative;
+  color: var(--landing-text);
+  font-family: "Graduate", serif;
+  font-size: clamp(1.15rem, 2vw, 1.55rem);
+  letter-spacing: 0.25em;
+  opacity: 0;
+  transform: translateY(10px);
+  animation: landing-wordmark-in 500ms 350ms ease forwards;
 }
 
 .landing-page *,
@@ -461,12 +513,12 @@ textarea::placeholder {
   gap: 1.1rem;
   background: var(--landing-accent);
   color: var(--landing-accent-dark) !important;
-  box-shadow: 0 14px 35px rgba(190, 255, 50, 0.1);
+  box-shadow: 0 14px 35px rgba(241, 230, 210, 0.1);
 }
 
 .landing-button:hover {
   transform: translateY(-2px);
-  background: #e3ff91;
+  background: #fff7e8;
 }
 
 .landing-button-small {
@@ -508,7 +560,7 @@ textarea::placeholder {
   right: -22%;
   width: 620px;
   height: 620px;
-  background: radial-gradient(circle, rgba(215, 255, 101, 0.11), transparent 66%);
+  background: radial-gradient(circle, rgba(241, 230, 210, 0.11), transparent 66%);
 }
 
 .landing-glow-two {
@@ -546,7 +598,7 @@ textarea::placeholder {
   height: 8px;
   border-radius: 50%;
   background: var(--landing-accent);
-  box-shadow: 0 0 0 6px rgba(215, 255, 101, 0.09);
+  box-shadow: 0 0 0 6px rgba(241, 230, 210, 0.09);
 }
 
 .landing-hero h1,
@@ -633,7 +685,7 @@ textarea::placeholder {
   bottom: -52px;
   width: 260px;
   height: 150px;
-  border: 1px dashed rgba(215, 255, 101, 0.25);
+  border: 1px dashed rgba(241, 230, 210, 0.25);
   border-bottom: 0;
   border-left: 0;
   border-radius: 0 100% 0 0;
@@ -679,9 +731,9 @@ textarea::placeholder {
 
 .landing-trip-status {
   padding: 0.5rem 0.65rem;
-  border: 1px solid rgba(215, 255, 101, 0.25);
+  border: 1px solid rgba(241, 230, 210, 0.25);
   border-radius: 999px;
-  background: rgba(215, 255, 101, 0.07);
+  background: rgba(241, 230, 210, 0.07);
   color: var(--landing-accent);
   font-size: 0.68rem;
   font-weight: 900;
@@ -793,8 +845,8 @@ textarea::placeholder {
 }
 
 .landing-timeline-icon-accent {
-  border-color: rgba(215, 255, 101, 0.2);
-  background: rgba(215, 255, 101, 0.09);
+  border-color: rgba(241, 230, 210, 0.2);
+  background: rgba(241, 230, 210, 0.09);
 }
 
 .landing-timeline-icon-accent svg {
@@ -950,7 +1002,7 @@ textarea::placeholder {
   width: 42px;
   height: 42px;
   place-items: center;
-  border: 1px solid rgba(215, 255, 101, 0.25);
+  border: 1px solid rgba(241, 230, 210, 0.25);
   border-radius: 50%;
   color: var(--landing-accent);
   font-family: "Graduate", serif;
@@ -968,9 +1020,9 @@ textarea::placeholder {
   align-items: end;
   margin-bottom: 90px;
   padding: clamp(2rem, 5vw, 4.5rem);
-  border: 1px solid rgba(215, 255, 101, 0.18);
+  border: 1px solid rgba(241, 230, 210, 0.18);
   border-radius: 28px;
-  background: radial-gradient(circle at 80% 20%, rgba(215, 255, 101, 0.12), transparent 35%), #111511;
+  background: radial-gradient(circle at 80% 20%, rgba(241, 230, 210, 0.12), transparent 35%), #111511;
 }
 
 .landing-final-action {
@@ -1013,6 +1065,47 @@ textarea::placeholder {
   to {
     opacity: 1;
     transform: translateY(0) rotateY(-3deg) rotateX(1.5deg);
+  }
+}
+
+@keyframes landing-plane-cross {
+  0% {
+    transform: translate(-140%, 15%) rotate(-8deg);
+  }
+  48% {
+    transform: translate(calc(50vw - 50%), -35%) rotate(-5deg);
+  }
+  100% {
+    transform: translate(calc(100vw + 30%), -110%) rotate(-11deg);
+  }
+}
+
+@keyframes landing-route-drift {
+  from {
+    opacity: 0;
+    transform: translateX(-8%) rotate(-4deg);
+  }
+  30% {
+    opacity: 1;
+  }
+  to {
+    opacity: 0.45;
+    transform: translateX(3%) rotate(-4deg);
+  }
+}
+
+@keyframes landing-wordmark-in {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes landing-loader-exit {
+  to {
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
   }
 }
 
@@ -1176,6 +1269,10 @@ textarea::placeholder {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .landing-loader {
+    display: none;
+  }
+
   .landing-preview {
     animation: none;
   }

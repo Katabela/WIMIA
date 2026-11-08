@@ -2,13 +2,21 @@
 {% block title %}WIMIA | Your itinerary, all in one place{% endblock %}
 {% block content %}
 <div class="landing-page">
+  <div class="landing-loader" aria-hidden="true">
+    <div class="landing-loader-route"></div>
+    <img
+      class="landing-loader-plane"
+      src="{{ url_for('static', filename='images/plane.png') }}"
+      alt=""
+    />
+    <span class="landing-loader-wordmark">WIMIA</span>
+  </div>
   <header class="landing-nav" aria-label="Primary navigation">
     <a class="landing-brand" href="{{ url_for('main.index') }}" aria-label="WIMIA home">
       <span class="landing-brand-mark" aria-hidden="true">W</span>
       <span>WIMIA</span>
     </a>
     <nav class="landing-nav-links" aria-label="Homepage">
-      <a href="#why-wimia">Why WIMIA</a>
       <a href="#how-it-works">How it works</a>
     </nav>
     <div class="landing-nav-actions">
@@ -26,16 +34,12 @@
       <div class="landing-glow landing-glow-one" aria-hidden="true"></div>
       <div class="landing-glow landing-glow-two" aria-hidden="true"></div>
       <div class="landing-hero-copy">
-        <p class="landing-eyebrow">
-          <span class="landing-status-dot" aria-hidden="true"></span>
-          Travel days, minus the group-chat chaos
-        </p>
         <h1 id="hero-title">
           Your whole itinerary.
           <span>One calm place.</span>
         </h1>
         <p class="landing-hero-lede">
-          Flights, stays, schedules, team details, and the latest updates—organized
+          Flights, stays, schedules, team details, and the latest updates, organized
           into one simple view so you always know what is next.
         </p>
         <div class="landing-hero-actions">
@@ -52,11 +56,6 @@
           <a class="landing-secondary-button" href="{{ url_for('auth.login') }}">I already have an account</a>
           {% endif %}
         </div>
-        <ul class="landing-hero-points" aria-label="WIMIA benefits">
-          <li><span aria-hidden="true">✓</span> One source of truth</li>
-          <li><span aria-hidden="true">✓</span> Built for mobile</li>
-          <li><span aria-hidden="true">✓</span> Updates stay organized</li>
-        </ul>
       </div>
 
       <div class="landing-preview-wrap" aria-label="Example WIMIA itinerary">
@@ -138,37 +137,8 @@
       </div>
     </section>
 
-    <section class="landing-problem" id="why-wimia" aria-labelledby="why-title">
-      <div class="landing-section-heading">
-        <p class="landing-section-kicker">Less searching. More knowing.</p>
-        <h2 id="why-title">No more screenshot archaeology.</h2>
-        <p>
-          WIMIA turns scattered travel details into a shared, easy-to-scan plan
-          that works just as well in the airport line as it does at your desk.
-        </p>
-      </div>
-      <div class="landing-feature-grid">
-        <article class="landing-feature-card">
-          <span class="landing-feature-number">01</span>
-          <h3>See what matters now</h3>
-          <p>Your next flight, check-in, team call, and schedule are always easy to find.</p>
-        </article>
-        <article class="landing-feature-card">
-          <span class="landing-feature-number">02</span>
-          <h3>Keep every detail together</h3>
-          <p>Travel, accommodation, contacts, documents, and team information live in one place.</p>
-        </article>
-        <article class="landing-feature-card">
-          <span class="landing-feature-number">03</span>
-          <h3>Move with the latest plan</h3>
-          <p>When an organizer changes an event, everyone can return to the same current itinerary.</p>
-        </article>
-      </div>
-    </section>
-
     <section class="landing-how" id="how-it-works" aria-labelledby="how-title">
       <div class="landing-how-copy">
-        <p class="landing-section-kicker">Simple by design</p>
         <h2 id="how-title">From “where is that?” to ready to go.</h2>
         <p>WIMIA keeps the setup with organizers and the clarity with travelers.</p>
       </div>
@@ -189,6 +159,13 @@
         </li>
         <li>
           <span>3</span>
+          <div>
+            <h3>Reminders come to you</h3>
+            <p>Email updates and event reminders help you stay prepared without repeatedly checking the app.</p>
+          </div>
+        </li>
+        <li>
+          <span>4</span>
           <div>
             <h3>Everyone stays on the same page</h3>
             <p>Return to WIMIA whenever you need the latest event information.</p>
